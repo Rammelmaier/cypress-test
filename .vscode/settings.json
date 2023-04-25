@@ -1,0 +1,29 @@
+{
+  "cucumberautocomplete.steps": [
+    "./support/stepDefinitions/**/*.steps.js",
+  ],
+  "cucumberautocomplete.strictGherkinCompletion": true,
+  "cucumberautocomplete.formatConfOverride": {
+    "Feature": 0,
+    "Background": 3,
+    "And": 4,
+    "Scenario": 2,
+    "Scenario Outline": 2,
+    "Given": 3,
+    "When": 3,
+    "Then": 3,
+    "Examples": 3,
+    "\\*": 2,
+    "\\|": 3,
+    "But": "relative",
+    "#": "relative",
+    "@": "relative"
+  },
+  "editor.detectIndentation": false,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "cSpell.words": [
+    "chromedriver",
+    "wdio"
+  ],
+}

@@ -1,0 +1,33 @@
+{
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "no-multi-spaces": "error",
+    "no-trailing-spaces": "error",
+    "no-unreachable": "error",
+    "no-undef": "off",
+    "no-unused-vars": "warn",
+    "eol-last": [
+      "error",
+      "always"
+    ],
+    "max-len": [
+      2,
+      140,
+      4
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ]
+  },
+  "globals": {
+    "cu": "readonly"
+  }
+}

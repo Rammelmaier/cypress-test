@@ -1,0 +1,24 @@
+{
+  "name": "cypress-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "npx cypress open",
+    "test": "cypress run --e2e --browser chrome --headed --spec **/*.feature",
+    "eslint": "npx eslint ."
+  },
+  "author": "Aliaksandr Novikau <blackfly@tut.by>",
+  "license": "ISC",
+  "devDependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^16.0.3",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
+    "chance": "^1.1.11",
+    "cypress": "^12.10.0",
+    "eslint": "^8.38.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": "support/stepDefinitions/**/*.{js,ts}"
+  }
+}

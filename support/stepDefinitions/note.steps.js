@@ -37,31 +37,36 @@ Then(/^I expect "(.*)" element is( not)? visible$/, (pageElement, isNotVisible) 
   }
 });
 
-Given(/^I expect "error message": "(maximum word length exceeded)" is( not)? displayed$/, (message, notDisplayed) => {
-  NotePage.verifyTextContentForElement(NotePage.elements.errorMessage(), message, !notDisplayed);
+Given(/^I expect "error message": "(.*)" is( not)? displayed$/, (message, notDisplayed) => {
+  if (notDisplayed) {
+    NotePage.verifyTextElementIsEmpty(NotePage.elements.errorMessage());
+  } else {
+    NotePage.verifyTextContentForElement(NotePage.elements.errorMessage(), message);
+  }
 });
 
 Then(/^I expect "(.*)" for note record "#(\d+)" is( not)? visible$/, (pageElement, noteNumber, isNotVisible) => {
+  const recordContainer = NotePage.record(noteNumber);
   const elements = NotePage.elements;
   let targetElement;
   switch (pageElement) {
     case 'Note text':
-      targetElement = elements.noteText(noteNumber);
+      targetElement = isNotVisible ? recordContainer : elements.noteText(noteNumber);
       break;
     case 'Remove button':
-      targetElement = elements.removeButton(noteNumber);
+      targetElement = isNotVisible ? recordContainer : elements.removeButton(noteNumber);
       break;
     case 'Weather icon':
-      targetElement = elements.weatherIcon(noteNumber);
+      targetElement = isNotVisible ? recordContainer : elements.weatherIcon(noteNumber);
       break;
     case 'Weather temperature':
-      targetElement = elements.weatherTemp(noteNumber);
+      targetElement = isNotVisible ? recordContainer : elements.weatherTemp(noteNumber);
       break;
     case 'Creation date':
-      targetElement = elements.date(noteNumber);
+      targetElement = isNotVisible ? recordContainer : elements.date(noteNumber);
       break;
     case 'Creation time':
-      targetElement = elements.time(noteNumber);
+      targetElement = isNotVisible ? recordContainer : elements.time(noteNumber);
       break;
   }
 
@@ -101,6 +106,18 @@ When(/^I type "(.*)" text in input field$/, (text) => {
     case '<string 32>':
       testMessage = randomString.randomString(32);
       break;
+    case '<string with spaces 299>':
+      testMessage = randomString.stringWithSpaces(299);
+      break;
+    case '<string with spaces 300>':
+      testMessage = randomString.stringWithSpaces(300);
+      break;
+    case '<string with spaces 301>':
+      testMessage = randomString.stringWithSpaces(301);
+      break;
+    case '<string with spaces 302>':
+      testMessage = randomString.stringWithSpaces(302);
+      break;
 
     default:
       testMessage = text;
@@ -120,23 +137,22 @@ When(/^I( not)? press "(Enter|Backspace)" key on keyboard$/, (notPress, button) 
 
 Then(/^I verify "(note text|weather icon|temperature|date|time)" for record "#(\d+)"$/, (block, recordNumber, value) => {
   const noteElements = NotePage.elements;
-  let assertion, condition;
+  let assertion;
   if (block === 'note text') {
     assertion = value ? value : noteText;
-    condition = true;
   } else {
     assertion = value;
   }
 
   switch (block) {
     case 'note text':
-      NotePage.verifyTextContentForElement(noteElements.noteText(recordNumber), assertion, condition);
+      NotePage.verifyTextContentForElement(noteElements.noteText(recordNumber), assertion);
       break;
     case 'weather icon':
       NotePage.verifyWeatherIcon(recordNumber, assertion);
       break;
     case 'temperature':
-      NotePage.verifyTextContentForElement(noteElements.weatherTemp(recordNumber), assertion);
+      NotePage.verifyTextContentForElement(noteElements.weatherTemp(recordNumber), assertion === 'C' ? ' ' + assertion : assertion);
       break;
     case 'date':
       NotePage.verifyTextContentForElement(noteElements.date(recordNumber), assertion);
@@ -148,7 +164,7 @@ Then(/^I verify "(note text|weather icon|temperature|date|time)" for record "#(\
 });
 
 Then(/^I expect "record note text" is empty for record "#(\d+)"$/, (recordNumber) => {
-  NotePage.verifyRecordTextContainerEmpty(recordNumber);
+  NotePage.verifyTextElementIsEmpty(NotePage.elements.noteText(recordNumber));
 });
 
 Then(/^I click on "Remove button" for note record "#(\d+)"$/, (recordNumber) => {

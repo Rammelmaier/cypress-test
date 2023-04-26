@@ -1,7 +1,7 @@
 Feature: Note test
     E2E tests for note application
 
-    Scenario: Verify application elements without notes
+    Scenario: A01 - Verify application elements without notes
       Given I open "Note" application
       Then I expect application page is opened
         And I expect "Empty note image" element is visible
@@ -11,7 +11,7 @@ Feature: Note test
         And I expect "error message": "maximum word length exceeded" is not displayed
         And I expect application have no records
 
-    Scenario: Verify application elements with note
+    Scenario: A02 - Verify application elements with note
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
@@ -30,7 +30,7 @@ Feature: Note test
         And I expect "Creation date" for note record "#1" is visible
         And I expect "Creation time" for note record "#1" is visible
 
-    Scenario Outline: Verify record is created without any text (by press key "enter" in input)
+    Scenario: OP01 - Verify record is created without any text (by press key "enter" in input)
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
@@ -38,53 +38,69 @@ Feature: Note test
         And I expect application have 1 record
       Then I expect "record note text" is empty for record "#1"
 
-    Scenario Outline: Verify record is created with "<note>" set of characters
+    Scenario Outline: OP02 - Verify record is created with "<note text>" set of characters
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
-        And I type "<note>" text in input field
-        And I expect "error message": "maximum word length exceeded" is not displayed
+        And I type "<note text>" text in input field
         And I press "Enter" key on keyboard
         And I expect application have 1 record
       Then I verify "note text" for record "#1"
 
       Examples:
-      | note            |
-      | <numeric 30>    |
-      | <alphabetic 30> |
-      | <symbolic 30>   |
-      | <string 30>     |
-      | <emoji 30>      |
+      | note text                |
+      | <numeric 30>             |
+      | <alphabetic 30>          |
+      | <symbolic 30>            |
+      | <string 30>              |
+      | <emoji 30>               |
+      | <string with spaces 299> |
+      | <string with spaces 300> |
 
-    Scenario: Verify error message displayed if char limit exceeded
+    Scenario Outline: <case> - Verify error message displayed if char limit exceeded for <rule>
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
-        And I type "<string 31>" text in input field
-      Then I expect "error message": "maximum word length exceeded" is displayed
+        And I type "<note text>" text in input field
+      Then I expect "error message": "<error message>" is displayed
 
-    Scenario: Verify note record is not created if char limit exceeded
+      Examples:
+      | case | rule              | note text                | error message                         |
+      | DV01 | common length 301 | <string with spaces 301> | maximum number of characters exceeded |
+      | DV03 | 1 word length 31  | <string 31>              | maximum word length exceeded          |
+
+    Scenario Outline: <case> -  Verify note record is not created if char limit exceeded for <rule>
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
-        And I type "<string 31>" text in input field
+        And I type "<note text>" text in input field
         And I press "Enter" key on keyboard
       Then I expect application have no records
 
-    Scenario: Verify note record is created when limit error fixed
+      Examples:
+      | case | rule              | note text                | error message                         |
+      | OP06 | common length 301 | <string with spaces 301> | maximum number of characters exceeded |
+      | OP07 | 1 word lenght 31  | <string 31>              | maximum word length exceeded          |
+
+    Scenario Outline: <case> - Verify note record is created when limit error fixed for <rule>
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
-        And I type "<string 32>" text in input field
-        And I expect "error message": "maximum word length exceeded" is displayed
+        And I type "<note text>" text in input field
+        And I expect "error message": "<error message>" is displayed
       When I press "Backspace" key on keyboard
-        And I expect "error message": "maximum word length exceeded" is displayed
+        And I expect "error message": "<error message>" is displayed
         And  I press "Backspace" key on keyboard
-      Then I expect "error message": "maximum word length exceeded" is not displayed
+      Then I expect "error message": "<error message>" is not displayed
         And I press "Enter" key on keyboard
       Then I expect application have 1 record
+      Examples:
+      | case | rule              | note text                | error message                         |
+      | DV02 | common length 302 | <string with spaces 302> | maximum number of characters exceeded |
+      | XXXX | common length 301 | <string with spaces 301> | maximum number of characters exceeded |
+      | DV04 | 1 word length 32  | <string 32>              | maximum word length exceeded          |
 
-    Scenario: Verify click on Cross button removes record
+    Scenario: OP04, A03 - Verify click on Cross button removes record
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
@@ -93,8 +109,18 @@ Feature: Note test
       Then I expect application have 1 record
         And I click on "Remove button" for note record "#1"
       Then I expect application have no records
+        And I expect "Empty note image" element is visible
+        And I expect "No notes label" element is visible
+        And I expect "Add notes label" element is visible
+        And I expect "Text input" element is visible
+        And I expect "Note text" for note record "#1" is not visible
+        And I expect "Remove button" for note record "#1" is not visible
+        And I expect "Weather icon" for note record "#1" is not visible
+        And I expect "Weather temperature" for note record "#1" is not visible
+        And I expect "Creation date" for note record "#1" is not visible
+        And I expect "Creation time" for note record "#1" is not visible
 
-    Scenario: Verify click on Cross button removes right record
+    Scenario: OP05 - Verify click on Cross button removes right record
       Given I open "Note" application
         And I expect application page is opened
         And I expect application have no records
@@ -112,7 +138,7 @@ Feature: Note test
         And I expect note text "TEST_2" is not present in record "#1"
         And I expect note text "TEST_2" is not present in record "#2"
 
-    Scenario: Verify that application creates records with browser date and time
+    Scenario: DV05 - Verify Application creates records with correct Date and Time
       Given I set browser system time as "2023"-"04"-"24" "12":"01"
         And  I open "Note" application
         And I expect application page is opened
@@ -183,8 +209,9 @@ Feature: Note test
       """
 
       Examples:
-      | message          | status | icon | temp | record icon      | record temp |
-      | Weather test 500 | 500    | 13d  | 5    | undefined@2x.png | C           |
-      | Weather test 400 | 400    | 13d  | 5    | undefined@2x.png | C           |
-      | Weather test 300 | 300    | 13d  | 5    | undefined@2x.png | C           |
-      | Weather test 200 | 200    | 13d  | 5    | 13d@2x.png       | +5 C        |
+      | case | message          | status | icon | temp | record icon | record temp |
+      | DV06 | Weather test 200 | 200    | 13d  | 5    | 13d@2x.png  | +5 C        |
+      | DV07 | Weather test 500 | 500    | 13d  | 5    | @2x.png     | C           |
+      | DV08 | Weather test 400 | 400    | 13d  | 5    | @2x.png     | C           |
+      | DV09 | Weather test 300 | 300    | 13d  | 5    | @2x.png     | C           |
+      | DV10 | Weather test 200 | 200    |      |      | @2x.png     | C           |

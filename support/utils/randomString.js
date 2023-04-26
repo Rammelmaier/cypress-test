@@ -22,3 +22,11 @@ export function randomEmoji(outputLength) {
   const sample = '♈';
   return sample.repeat(outputLength);
 }
+
+/**
+ * Returns string with predefined length and space each 25 symbol
+ */
+export function stringWithSpaces(length) {
+  const string = randomString(length);
+  return string.replace(/.{1,2}(?=(.{25})+$)/g, '$& ').slice(0, length);
+}

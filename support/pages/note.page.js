@@ -42,15 +42,16 @@ class NotePage {
   }
 
   verifyTextContentForElement(element, text, contain = true) {
-    element.should(contain ? 'contain.text' : 'not.contain.text', text);
+    element.should(contain ? 'have.text' : 'not.have.text', text);
   }
 
-  verifyRecordTextContainerEmpty(recordNumber) {
-    this.elements.noteText(recordNumber).should('be.empty');
+  verifyTextElementIsEmpty(element) {
+    element.should('be.empty');
   }
 
   verifyWeatherIcon(notePosition, iconName) {
     this.elements.weatherIcon(notePosition).should('have.attr', 'src').and('include', iconName);
+    this.elements.weatherIcon(notePosition).should('have.attr', 'alt', 'weather img').and('be.visible');
   }
 
   removeNoteWithPosition(position = 1) {

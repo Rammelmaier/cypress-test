@@ -45,10 +45,6 @@ class NotePage {
     element.should(contain ? 'have.text' : 'not.have.text', text);
   }
 
-  verifyRecordTextContainerEmpty(recordNumber) {
-    this.elements.noteText(recordNumber).should('be.empty');
-  }
-
   verifyTextElementIsEmpty(element) {
     element.should('be.empty');
   }
